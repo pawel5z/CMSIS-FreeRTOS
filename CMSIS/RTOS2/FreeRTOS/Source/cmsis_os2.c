@@ -1165,8 +1165,11 @@ osStatus_t osDelay (uint32_t ticks) {
 
   if (IRQ_Context() != 0U) {
     stat = osErrorISR;
-  }
-  else {
+  } else if (ticks == 0) {
+    stat = osErrorParameter;
+  } else if (osKernelGetState() != osKernelRunning) {
+    stat = osError;
+  } else {
     stat = osOK;
 
     if (ticks != 0U) {
